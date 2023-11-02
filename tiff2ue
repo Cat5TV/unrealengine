@@ -1,0 +1,61 @@
+#!/bin/bash
+dirname=${PWD##*/}
+datestamp=$(date +"%Y-%m-%d")
+
+PS3='Which output type? '
+options=("Screen" "Cast")
+select option in "${options[@]}"; do
+    case $option in
+        "Screen")
+            filetype="jpg"
+            break
+            ;;
+        "Cast")
+            filetype="png"
+            break
+            ;;
+        *) echo "invalid option $REPLY";;
+    esac
+done
+
+printf "Started ${dirname} "
+date
+
+# If this folder has .tif files, convert them to PNG.
+printf "Checking if ${dirname} has TIF files... "
+count=`ls -1 *.tif 2>/dev/null | wc -l`
+if [ $count != 0 ]
+then
+  echo "Yes. Converting to ${filetype}."
+  parallel convert {} {.}.${filetype} ::: *.tif && rm *.tif
+else
+  echo "No."
+fi
+
+# Create the Unreal Engine Proxy files
+if [[ -e ue_proxy ]]; then
+  echo "Removing existing UE Proxy."
+  rm -rf ue_proxy
+fi
+echo "Creating fresh UE Proxy."
+mkdir ue_proxy
+parallel mogrify -resize 550x550 -path ue_proxy/ {} ::: *.${filetype}
+
+echo "Creating backup ${datestamp} - ${dirname}.zip"
+zip -r -9 "../${datestamp} - ${dirname}.zip" .
+
+if [[ ! -e /tmp/y ]]; then
+  echo "Creating mountpoint for Y:"
+  mkdir /tmp/y
+fi
+echo "Mounting Y:"
+sudo mount -t drvfs Y: /tmp/y
+
+echo "Moving backup to Y:\AR Set\Image Sequences\\"
+mv "../${datestamp} - ${dirname}.zip" "/tmp/y/AR Set/Image Sequences/"
+
+echo "Unmounting Y:"
+sudo umount /tmp/y
+
+date
+
