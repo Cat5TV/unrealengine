@@ -11,3 +11,8 @@ Supports both Cast and Screen output:
 Cast - PNG sequence containing an actor with a dynamic alpha, such as a person moving. Alpha is maintained.
 
 Screen - JPG seqeunce for something like a computer screen or TV screen in-game. Alpha, if it exists, is discarded.
+
+console_variables.md
+====================
+
+[console_variables.md](console_variables.md) contains a table of the console variables I use when rendering video from Unreal Engine.
