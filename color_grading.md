@@ -25,6 +25,7 @@ Grade Video
 7. Add another corrector node after that node.
 8. With that new node highlighted, open LUTs.
 9. In Film Looks, click the one that looks best.
+10. Add another correction node at the end of the series and add Film Grain effect.
 
 
 By Robbie Ferguson, [Category5 Technology TV](https://youtube.com/LinuxTechShow)
